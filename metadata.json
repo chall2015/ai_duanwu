@@ -1,0 +1,6 @@
+{
+  "name": "端午甜咸粽大作战",
+  "description": "2026年端午限定H5互动网页。通过国风动效、阵营投票、专属表情包定制、以及节奏龙舟鼓点游戏，让用户深度参与端午甜咸世纪大决战！",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
