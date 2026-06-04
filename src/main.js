@@ -1,7 +1,3 @@
-import { fetchVotes, loadSavedStickers, subscribeState } from "./state.js";
-import { renderUI } from "./ui.js";
-import "./index.css";
-
 function initApp() {
   const root = document.getElementById("root");
   if (!root) return;

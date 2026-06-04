@@ -1,6 +1,4 @@
-import { updateGameScore, state, castVote } from "./state.js";
-
-export class DragonBoatGame {
+class DragonBoatGame {
   constructor(container) {
     this.container = container;
     this.canvas = null;

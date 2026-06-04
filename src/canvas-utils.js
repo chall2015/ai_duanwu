@@ -1,4 +1,4 @@
-export class NationalWindBackground {
+class NationalWindBackground {
   constructor(canvas, rbgType = "home") {
     this.canvas = canvas;
     const context = canvas.getContext("2d");

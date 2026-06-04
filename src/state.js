@@ -1,4 +1,4 @@
-export const state = {
+const state = {
   currentPage: "home",
   userCamp: null,
   votes: { sweet: 12580, salty: 12845 },
@@ -14,16 +14,16 @@ export const state = {
 
 const listeners = [];
 
-export function subscribeState(listener) {
+function subscribeState(listener) {
   listeners.push(listener);
 }
 
-export function notifyStateChange() {
+function notifyStateChange() {
   listeners.forEach(fn => fn(state));
 }
 
 // Fetch Initial Vote Counts
-export async function fetchVotes() {
+async function fetchVotes() {
   try {
     const res = await fetch("/api/votes");
     if (res.ok) {
@@ -36,7 +36,7 @@ export async function fetchVotes() {
 }
 
 // Cast Vote
-export async function castVote(camp) {
+async function castVote(camp) {
   state.userCamp = camp;
   notifyStateChange();
 
@@ -128,7 +128,7 @@ function getStringHash(str) {
 }
 
 // Generate Personalized Expression Sticker (Pure Frontend Simulation)
-export async function generateSticker(username, photoBase64) {
+async function generateSticker(username, photoBase64) {
   if (!state.userCamp) return null;
   state.username = username || "端午少侠";
   state.stickerGenerating = true;
@@ -168,7 +168,7 @@ export async function generateSticker(username, photoBase64) {
 }
 
 // Load saved stickers from LocalStorage
-export function loadSavedStickers() {
+function loadSavedStickers() {
   try {
     const raw = localStorage.getItem("my_zongzi_stickers");
     if (raw) {
@@ -180,7 +180,7 @@ export function loadSavedStickers() {
 }
 
 // Update game high scores
-export function updateGameScore(score) {
+function updateGameScore(score) {
   state.scores.currentGame = score;
   if (score > state.scores.highScore) {
     state.scores.highScore = score;

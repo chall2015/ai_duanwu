@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "node server.js",
-    "build": "vite build",
+    "build": "npm run clean && mkdir -p dist/src && cp index.html dist/index.html && cp -r src/* dist/src/",
     "start": "node server.js",
     "preview": "vite preview",
     "clean": "rm -rf dist",

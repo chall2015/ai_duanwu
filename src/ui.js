@@ -1,7 +1,3 @@
-import { state, subscribeState, castVote, generateSticker, loadSavedStickers } from "./state.js";
-import { NationalWindBackground } from "./canvas-utils.js";
-import { DragonBoatGame } from "./game.js";
-
 let activeBg = null;
 let activeGame = null;
 
@@ -472,7 +468,7 @@ function renderGame(appContainer) {
 }
 
 // Unified Render Router Layer
-export function renderUI() {
+function renderUI() {
   const appContainer = document.getElementById("app-container");
   if (!appContainer) return;
 
