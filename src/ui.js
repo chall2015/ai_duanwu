@@ -298,7 +298,7 @@ function renderHome(appContainer) {
               </button>
 
               <button id="btn-goto-game-fun" class="w-full py-3.5 rounded-xl border border-amber-600/30 bg-amber-950/10 hover:bg-amber-950/20 text-amber-200 text-xs font-bold tracking-wider transition active:scale-[0.98] cursor-pointer text-center">
-                🚣 擂鼓竞舟挑战
+                🚣 龙舟竞速挑战
               </button>
 
               <button id="btn-more-interactions-fun" class="w-full py-3 rounded-xl border border-stone-800/80 bg-stone-950/60 hover:bg-stone-900/80 text-stone-300 text-xs font-bold tracking-wider transition active:scale-[0.98] cursor-pointer text-center mt-1">
@@ -307,12 +307,13 @@ function renderHome(appContainer) {
             `
               : `
               <div class="text-[11px] text-rose-400 font-medium bg-rose-950/30 border border-rose-800/30 px-3.5 py-3 rounded-xl text-center leading-relaxed">
-                ⚠️ 战局焦灼！您拥护的阵营目前<strong>暂时落后</strong>。通关龙舟游戏即可自动解锁专属土味表情包！
+                <div class="font-bold text-xs text-rose-300 mb-1">🔥 阵营暂时落后</div>
+                您拥立的阵营目前积分暂时落后。<br/>通关龙舟竞速挑战，即可解锁专属表情包定制特权！
               </div>
 
               <button id="btn-goto-game-fight" class="w-full py-4 rounded-xl font-bold text-sm tracking-wide bg-amber-600 hover:bg-amber-500 text-stone-100 shadow-md transition active:scale-[0.98] cursor-pointer pointer-events-auto border-t border-amber-400/20 relative group overflow-hidden">
                 <div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition duration-150"></div>
-                🚣 擂鼓通关解锁 ↗
+                🚣 龙舟竞速挑战
               </button>
 
               <button id="btn-more-interactions-fight" class="w-full py-3 rounded-xl border border-stone-800/80 bg-stone-950/60 hover:bg-stone-900/80 text-stone-300 text-xs font-bold tracking-wider transition active:scale-[0.98] cursor-pointer text-center mt-1">
@@ -435,13 +436,6 @@ function renderQuiz(appContainer) {
       // Get latest state data and set locks
       const sweetVotes = state.votes.sweet;
       const saltyVotes = state.votes.salty;
-      const isSweetLeading = sweetVotes >= saltyVotes;
-      const isSaltyLeading = saltyVotes >= sweetVotes;
-      const isUserLeading = (currentCamp === "sweet" && isSweetLeading) || (currentCamp === "salty" && isSaltyLeading);
-      
-      if (!isUserLeading) {
-        state.showTrailingGuideModal = true;
-      }
       
       state.currentPage = "home";
       renderUI();
@@ -540,53 +534,6 @@ function renderModal() {
   // Reset inline styles
   modalContainer.style.cssText = "";
 
-  if (state.showTrailingGuideModal) {
-    modalContainer.className = "fixed pointer-events-auto flex items-center justify-center";
-    modalContainer.style.cssText = "width: 100%; height: 100%; z-index: 999999; background: rgba(0,0,0,0.65);";
-    modalContainer.innerHTML = `
-      <!-- Parent custom fixed full-screen outer container with requested transparent backdrop -->
-      <div id="trailing-guide-backdrop" class="fixed inset-0 w-full h-full flex items-center justify-center" style="background: rgba(0, 0, 0, 0.1);">
-        <!-- Inner child popup container, beautifully centered -->
-        <div class="bg-stone-900 border border-stone-800 rounded-2xl w-[85%] max-w-[280px] p-6 shadow-2xl relative text-center flex flex-col items-center justify-center transform scale-100 transition-all pointer-events-auto">
-          
-          <!-- Elegant top icon -->
-          <div class="w-14 h-14 rounded-full bg-rose-950/40 border border-rose-500/30 flex items-center justify-center mb-4 text-glow shrink-0">
-            <span class="text-2xl select-none select-none">🔥</span>
-          </div>
-
-          <!-- Title -->
-          <h3 class="text-sm font-bold font-serif text-amber-200 tracking-wider mb-2">
-            阵营暂时落后
-          </h3>
-
-          <!-- Description -->
-          <p class="text-[11px] text-stone-400 leading-relaxed font-sans mb-6">
-            您拥立的阵营目前积分暂时落后。<br/>通关龙舟竞舟助力本派，即可解锁专属土味表情包定制特权！
-          </p>
-
-          <!-- Action button -->
-          <button id="btn-close-trailing-guide" class="w-full py-2.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs tracking-widest cursor-pointer transition-all active:scale-[0.98]">
-            通关助力解锁 ↗
-          </button>
-        </div>
-      </div>
-    `;
-
-    document.getElementById("btn-close-trailing-guide")?.addEventListener("click", () => {
-      state.showTrailingGuideModal = false;
-      renderModal();
-      startBoatGameIframe();
-    });
-
-    document.getElementById("trailing-guide-backdrop")?.addEventListener("click", (e) => {
-      if (e.target === document.getElementById("trailing-guide-backdrop")) {
-        state.showTrailingGuideModal = false;
-        renderModal();
-      }
-    });
-    return;
-  }
-
   if (state.showGameReturnTip) {
     modalContainer.className = "fixed pointer-events-auto flex items-center justify-center";
     modalContainer.style.cssText = "width: 100%; height: 100%; z-index: 999999; background: rgba(0,0,0,0.6);";
@@ -654,12 +601,12 @@ function renderModal() {
             💡 趁着神机算计期间，前往体验：
           </p>
           <p class="text-xs text-stone-300 font-medium mt-1 leading-relaxed">
-            🚣 龙舟竞舟玩法，打鼓助威为本队拉票！
+            🚣 龙舟竞速挑战，通关可获得本阵营助力！
           </p>
         </div>
 
         <button id="btn-loader-go-game" class="w-full max-w-xs py-3 rounded-xl bg-orange-600 hover:bg-orange-500 text-stone-100 font-bold text-xs shadow-lg tracking-widest cursor-pointer pointer-events-auto transition active:scale-95 animate-pulse">
-          🚣 立即前往擂鼓挑战 ↗
+          🚣 龙舟竞速挑战 ↗
         </button>
       </div>
     `;
