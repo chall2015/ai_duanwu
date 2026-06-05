@@ -7,6 +7,11 @@ const state = {
   stickerGenerating: false,
   userPhotoBase64: "",
   showGameReturnTip: false,
+  selectedCampTemp: null,
+  quizCurrentIndex: 0,
+  quizScore: 0,
+  stickerUnlocked: false,
+  showTrailingGuideModal: false,
   scores: {
     currentGame: 0,
     highScore: parseInt(localStorage.getItem("dragon_boat_high_score") || "0", 10)
@@ -37,7 +42,7 @@ async function fetchVotes() {
 }
 
 // Cast Vote
-async function castVote(camp) {
+async function castVote(camp, amount) {
   state.userCamp = camp;
   notifyStateChange();
 
@@ -45,7 +50,7 @@ async function castVote(camp) {
     const res = await fetch("/api/votes", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ camp })
+      body: JSON.stringify({ camp, amount: amount || 1 })
     });
     if (res.ok) {
       const data = await res.json();
@@ -56,8 +61,9 @@ async function castVote(camp) {
     }
   } catch (err) {
     console.error("Failed to cast vote:", err);
-    if (camp === "sweet") state.votes.sweet += 1;
-    else state.votes.salty += 1;
+    const increment = amount || 1;
+    if (camp === "sweet") state.votes.sweet += increment;
+    else state.votes.salty += increment;
     notifyStateChange();
   }
 }

@@ -78,6 +78,93 @@ async function drawStickerCanvasAndSave(sticker, containerId) {
   `;
 }
 
+const QUIZ_QUESTIONS = {
+  sweet: [
+    {
+      question: "甜粽的“黄金吃法”应当蘸什么？",
+      options: [
+        { key: "A", text: "尊贵的白砂糖（这才是甜食党唯一圣律！）", isCorrect: true },
+        { key: "B", text: "老陈醋（魔鬼行为，拖出去！）", isCorrect: false }
+      ],
+      desc: "没错！经典白砂糖与软糯糯米的绝妙酥沙感，才是甜粽的最佳伴侣！"
+    },
+    {
+      question: "在甜粽中，哪种馅料被誉为“甜中之魂”？",
+      options: [
+        { key: "A", text: "蜜香红豆与起沙蜜枣（甜过初恋，糯到心底！）", isCorrect: true },
+        { key: "B", text: "纯白肥肉（那是隔壁咸粽的肉食浪漫！）", isCorrect: false }
+      ],
+      desc: "回答正确！蜜枣红豆带来极其温柔的甜蜜，甜食党听到都留下了感动的眼泪。"
+    },
+    {
+      question: "将甜粽放凉了之后吃，口感会有什么神奇变化？",
+      options: [
+        { key: "A", text: "Q弹软糯，仿佛在吃神仙冰凉甜点！", isCorrect: true },
+        { key: "B", text: "硬如钢铁，可以用来锤核桃砸钉子", isCorrect: false }
+      ],
+      desc: "明智的选择！冰镇或放凉的甜粽口感极为柔韧紧实，是不可多得的消暑良品。"
+    },
+    {
+      question: "端午节吃甜粽，相传能带来什么民俗玄学好运？",
+      options: [
+        { key: "A", text: "“粽”情甜蜜，日子甜美，金榜高“粽”！", isCorrect: true },
+        { key: "B", text: "体能大涨，可以徒步绕行赤道两圈", isCorrect: false }
+      ],
+      desc: "太赞了！“高粽”谐音“高中”，香甜软糯的端午甜粽寓意福星高照、喜事连连！"
+    },
+    {
+      question: "在甜粽拥护者眼里，将浓鲜咸五花肉放进粽皮是何等行为？",
+      options: [
+        { key: "A", text: "一场离经叛道的酱油魔法陷阱！", isCorrect: true },
+        { key: "B", text: "完全合理，甜咸都爱", isCorrect: false }
+      ],
+      desc: "有趣！在原教旨甜粽党看来，端午必须是纯粹甘甜，咸粽那是一本正经的“肉包子大变装”！"
+    }
+  ],
+  salty: [
+    {
+      question: "咸粽派最核心、最不可妥协的“铁血真理”是什么？",
+      options: [
+        { key: "A", text: "极品咸蛋黄 + 爆汁五花肉（油脂深入米粒，鲜香绝顶！）", isCorrect: true },
+        { key: "B", text: "蘸着浓稠炼乳当下午茶小点心（这是对绝美肉香的奇袭！）", isCorrect: false }
+      ],
+      desc: "完全正确！汪着油的五花肉配上沙软蛋黄，是刻在咸党体内的无上荣光！"
+    },
+    {
+      question: "咸粽里的极品五花肉，最极致美味的境界是什么？",
+      options: [
+        { key: "A", text: "肥肉蒸至完全化开，温润油脂彻底浸透每一粒糯米", isCorrect: true },
+        { key: "B", text: "整块干如牛肉干，塞在牙缝里拽不出来", isCorrect: false }
+      ],
+      desc: "肉食美学满分！肥瘦相间，入口酥烂，油脂和米饭融为一体才是咸粽的最高礼赞。"
+    },
+    {
+      question: "对于咸粽派的大侠而言，粽子里不加酱油意味着什么？",
+      options: [
+        { key: "A", text: "失去了灵魂保护色，这简直不能称之为粽！", isCorrect: true },
+        { key: "B", text: "健康减盐，虽然看起来有点苍白", isCorrect: false }
+      ],
+      desc: "正解！酱香色泽带来浓厚的视觉与味觉双重震撼，是必不可少的仪式感。"
+    },
+    {
+      question: "吃咸肉蛋黄粽时，最让人极其惊艳的“金光宝藏”在何处？",
+      options: [
+        { key: "A", text: "咬到那一颗金黄起沙、流油烫口的极品咸蛋黄！", isCorrect: true },
+        { key: "B", text: "咬到了外层坚硬厚实的干枯老粽叶", isCorrect: false }
+      ],
+      desc: "英雄所见略同！那一颗沙软冒油的蛋黄在口中爆开，任何烦恼都会一扫而空！"
+    },
+    {
+      question: "咸粽大将军认为，“白糖蘸一切”在端午应该怎么定性？",
+      options: [
+        { key: "A", text: "甜党最后的尊严，但唯有酱香咸粽能主宰江山！", isCorrect: true },
+        { key: "B", text: "甘拜下风，甜的更好吃", isCorrect: false }
+      ],
+      desc: "太霸气了！甜粽虽有甜意，但能作为能量担当、扛起端午节饱腹满足感大旗的，还得是肉粽大将军！"
+    }
+  ]
+};
+
 // 1. Home Page UI Render Function
 function renderHome(appContainer) {
   const sweetVotes = state.votes.sweet;
@@ -116,14 +203,20 @@ function renderHome(appContainer) {
       </div>
     `;
 
-    // Bind Choice Buttons
+    // Bind Choice Buttons & transition to Quiz page instead of casting vote immediately
     document.getElementById("btn-home-sweet")?.addEventListener("click", () => {
-      castVote("sweet");
+      state.selectedCampTemp = "sweet";
+      state.quizCurrentIndex = 0;
+      state.quizScore = 0;
+      state.currentPage = "quiz";
       renderUI();
     });
 
     document.getElementById("btn-home-salty")?.addEventListener("click", () => {
-      castVote("salty");
+      state.selectedCampTemp = "salty";
+      state.quizCurrentIndex = 0;
+      state.quizScore = 0;
+      state.currentPage = "quiz";
       renderUI();
     });
 
@@ -133,12 +226,13 @@ function renderHome(appContainer) {
     const isSweetLeading = sweetVotes >= saltyVotes;
     const isSaltyLeading = saltyVotes >= sweetVotes;
     const isUserLeading = (state.userCamp === "sweet" && isSweetLeading) || (state.userCamp === "salty" && isSaltyLeading);
+    const hasStickerPermissions = isUserLeading || state.stickerUnlocked;
 
     appContainer.innerHTML = `
       <!-- Top Chinese Calligraphy Banner Title -->
       <div class="w-full max-w-md mx-auto pt-10 px-6 flex flex-col items-center text-center z-10 relative">
         <div class="mb-1.5 px-3 py-0.5 rounded-full border ${
-          state.userCamp === "sweet" ? "border-rose-605/30 bg-rose-950/20 text-rose-400" : "border-emerald-600/30 bg-emerald-950/20 text-emerald-400"
+          state.userCamp === "sweet" ? "border-rose-600/30 bg-rose-950/20 text-rose-400" : "border-emerald-600/30 bg-emerald-950/20 text-emerald-400"
         } text-[10px] tracking-widest uppercase font-mono shadow-xs">
           ${state.userCamp === "sweet" ? "您已加入甜粽刺客团 🏮" : "您已投奔咸粽铁血军 ⚔️"}
         </div>
@@ -186,13 +280,13 @@ function renderHome(appContainer) {
           </div>
         </div>
 
-        <!-- Conditional generation buttons based on Leading status -->
+        <!-- Conditional generation buttons based on Unlock status -->
         <div class="flex flex-col gap-3">
           ${
-            isUserLeading
+            hasStickerPermissions
               ? `
               <div class="text-[11px] text-emerald-400 font-medium bg-emerald-950/30 border border-emerald-800/30 px-3.5 py-3 rounded-xl text-center leading-relaxed">
-                🎉 捷报！您所支持的阵营在实时票数中正值<strong>占优</strong>！拥有定制专属表情包特权！
+                🎉 恭喜少侠！专属土味表情包定制特权已成功解锁！
               </div>
               
               <!-- Direct camera/photo input hidden selector -->
@@ -213,12 +307,12 @@ function renderHome(appContainer) {
             `
               : `
               <div class="text-[11px] text-rose-400 font-medium bg-rose-950/30 border border-rose-800/30 px-3.5 py-3 rounded-xl text-center leading-relaxed">
-                ⚠️ 战局焦灼！您拥护的阵营目前<strong>暂未占优</strong>，无法通过表情包定制。快去打鼓拉票、助其完成逆袭吧！
+                ⚠️ 战局焦灼！您拥护的阵营目前<strong>暂时落后</strong>。通关龙舟游戏即可自动解锁专属土味表情包！
               </div>
 
               <button id="btn-goto-game-fight" class="w-full py-4 rounded-xl font-bold text-sm tracking-wide bg-amber-600 hover:bg-amber-500 text-stone-100 shadow-md transition active:scale-[0.98] cursor-pointer pointer-events-auto border-t border-amber-400/20 relative group overflow-hidden">
                 <div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition duration-150"></div>
-                🚣 擂鼓竞舟挑战
+                🚣 擂鼓通关解锁 ↗
               </button>
 
               <button id="btn-more-interactions-fight" class="w-full py-3 rounded-xl border border-stone-800/80 bg-stone-950/60 hover:bg-stone-900/80 text-stone-300 text-xs font-bold tracking-wider transition active:scale-[0.98] cursor-pointer text-center mt-1">
@@ -293,12 +387,205 @@ function renderHome(appContainer) {
   }
 }
 
+// 1.5. Interactive Quiz Page UI Render Function
+function renderQuiz(appContainer) {
+  const currentCamp = state.selectedCampTemp || "sweet";
+  const questions = QUIZ_QUESTIONS[currentCamp];
+  const questionIndex = state.quizCurrentIndex;
+  
+  if (questionIndex >= questions.length) {
+    // End of quiz: Show result summary card, and allow submitting
+    const score = state.quizScore;
+    
+    appContainer.innerHTML = `
+      <div class="w-full max-w-md mx-auto pt-10 px-6 flex flex-col items-center text-center z-10 relative">
+        <div class="mb-2 px-3 py-0.5 rounded-full border border-amber-600/30 bg-amber-950/20 text-[10px] tracking-widest text-amber-500 uppercase font-mono shadow-xs animate-pulse">
+          五 题 趣 味 答 题 告 捷
+        </div>
+      </div>
+
+      <div class="w-full max-w-sm mx-auto px-6 mt-6 z-10 relative flex-1 flex flex-col justify-center">
+        <div class="bg-stone-900/90 border border-stone-800 rounded-2xl p-6 shadow-2xl text-center backdrop-blur-md relative overflow-hidden">
+          <div class="absolute -inset-1 opacity-5 bg-gradient-to-tr from-amber-500 to-yellow-500 blur-xl pointer-events-none"></div>
+
+          <p class="text-xs text-stone-300 leading-relaxed mb-6 font-sans">
+            恭喜少侠在端午趣味冷知识试炼中，一共答对了 <span class="text-amber-400 font-bold text-base font-mono">${score}</span> 道题！
+            <br/>将直接为本阵营（${currentCamp === "sweet" ? "甜粽刺客团" : "咸粽铁血军"}）累计贡献 <span class="text-emerald-400 font-bold text-sm font-mono">+${score}</span> 票！
+          </p>
+
+          <button id="btn-quiz-submit" class="w-full py-4 rounded-xl font-bold text-sm tracking-widest bg-gradient-to-r from-amber-600 to-orange-500 hover:from-amber-500 hover:to-orange-400 text-stone-950 transition active:scale-[0.98] cursor-pointer shadow-lg border-t border-amber-400/20">
+            加入阵营
+          </button>
+        </div>
+      </div>
+    `;
+    
+    document.getElementById("btn-quiz-submit")?.addEventListener("click", async () => {
+      // Show loader
+      appContainer.innerHTML = `
+        <div class="absolute inset-0 flex flex-col justify-center items-center text-center p-6 bg-stone-950/80">
+          <div class="w-12 h-12 rounded-full border-4 border-amber-500/20 border-t-amber-500 animate-spin mb-4"></div>
+          <p class="text-sm text-amber-200 font-bold tracking-wider">正在将积分同步至全网宗盟中...</p>
+        </div>
+      `;
+      
+      // Perform voting cast
+      await castVote(currentCamp, score);
+      
+      // Get latest state data and set locks
+      const sweetVotes = state.votes.sweet;
+      const saltyVotes = state.votes.salty;
+      const isSweetLeading = sweetVotes >= saltyVotes;
+      const isSaltyLeading = saltyVotes >= sweetVotes;
+      const isUserLeading = (currentCamp === "sweet" && isSweetLeading) || (currentCamp === "salty" && isSaltyLeading);
+      
+      if (!isUserLeading) {
+        state.showTrailingGuideModal = true;
+      }
+      
+      state.currentPage = "home";
+      renderUI();
+    });
+    return;
+  }
+  
+  const currentQuestion = questions[questionIndex];
+  
+  appContainer.innerHTML = `
+    <!-- Top Progress Indicators -->
+    <div class="w-full max-w-md mx-auto pt-10 px-6 flex flex-col items-center text-center z-10 relative">
+      <div class="mb-2 px-3 py-0.5 rounded-full border border-amber-600/30 bg-amber-950/20 text-[10px] tracking-widest text-amber-500 uppercase font-mono shadow-xs">
+        端 午 阵 营 趣 味 轻 答 题（${questionIndex + 1} / 5）
+      </div>
+      <!-- Progress Bar -->
+      <div class="w-[180px] h-1 bg-stone-950 rounded-full overflow-hidden mt-1 md:mt-2 border border-stone-850">
+        <div class="h-full bg-amber-500 duration-300 transition-all rounded-full" style="width: ${(questionIndex + 1) * 20}%"></div>
+      </div>
+    </div>
+
+    <!-- Active Question Card -->
+    <div class="w-full max-w-sm mx-auto px-6 mt-6 z-10 relative flex-1 flex flex-col justify-center">
+      <div id="quiz-card-box" class="bg-stone-900/85 border border-stone-800 rounded-2xl p-5 md:p-6 shadow-2xl backdrop-blur-md relative overflow-hidden flex flex-col justify-between">
+        
+        <!-- Question Text Header -->
+        <div class="mb-5 md:mb-6">
+          <span class="text-[10px] font-bold ${currentCamp === "sweet" ? "text-rose-400 bg-rose-950/40 border border-rose-900/50" : "text-emerald-400 bg-emerald-950/40 border border-emerald-900/50"} px-2.5 py-0.5 rounded-full select-none">
+            ${currentCamp === "sweet" ? "🍡 甜粽派" : "🥩 咸粽派"}
+          </span>
+          <h2 class="text-sm font-serif font-bold text-stone-100 leading-relaxed mt-4">
+            ${currentQuestion.question}
+          </h2>
+        </div>
+
+        <!-- Options List Group -->
+        <div class="space-y-3" id="options-group">
+          ${currentQuestion.options.map((opt, oIdx) => `
+            <button data-idx="${oIdx}" class="btn-quiz-option w-full py-3.5 px-4 rounded-xl text-xs text-left font-medium text-stone-300 border border-stone-800 bg-stone-950/50 hover:bg-stone-850 hover:border-stone-700 transition duration-150 cursor-pointer flex items-start gap-2.5 group relative">
+              <span class="font-mono text-amber-500 font-bold bg-amber-950/30 border border-amber-900/30 rounded-md w-5 h-5 flex items-center justify-center text-center shrink-0 group-hover:bg-amber-500 group-hover:text-stone-950 duration-150">${opt.key}</span>
+              <span class="leading-relaxed select-none shrink-1">${opt.text}</span>
+            </button>
+          `).join("")}
+        </div>
+
+      </div>
+    </div>
+  `;
+  
+  // Bind Quiz Options clicks
+  const optionButtons = appContainer.querySelectorAll(".btn-quiz-option");
+  optionButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      // Disable further clicks
+      optionButtons.forEach(b => {
+        b.setAttribute("disabled", "true");
+        b.classList.add("opacity-50", "pointer-events-none");
+      });
+      
+      const idx = parseInt(btn.getAttribute("data-idx"), 10);
+      const chosenOpt = currentQuestion.options[idx];
+      const isCorrect = chosenOpt.isCorrect;
+      
+      if (isCorrect) {
+        state.quizScore += 1;
+        btn.classList.remove("opacity-50", "border-stone-800", "bg-stone-950/50");
+        btn.classList.add("border-emerald-600", "bg-emerald-950/20", "opacity-100");
+      } else {
+        btn.classList.remove("opacity-50", "border-stone-800", "bg-stone-950/50");
+        btn.classList.add("border-rose-600", "bg-rose-950/20", "opacity-100");
+        
+        // Highlight correct button option too
+        optionButtons.forEach(b => {
+          const bIdx = parseInt(b.getAttribute("data-idx"), 10);
+          const otherOpt = currentQuestion.options[bIdx];
+          if (otherOpt && otherOpt.isCorrect) {
+            b.classList.remove("opacity-50");
+            b.classList.add("border-emerald-600/40", "bg-emerald-950/10", "opacity-100");
+          }
+        });
+      }
+      
+      // Auto-advance to the next question after a very brief delay
+      setTimeout(() => {
+        state.quizCurrentIndex += 1;
+        renderUI();
+      }, 800);
+    });
+  });
+}
+
 function renderModal() {
   const modalContainer = document.getElementById("modal-container");
   if (!modalContainer) return;
 
   // Reset inline styles
   modalContainer.style.cssText = "";
+
+  if (state.showTrailingGuideModal) {
+    modalContainer.className = "fixed pointer-events-auto flex items-center justify-center";
+    modalContainer.style.cssText = "width: 100%; height: 100%; z-index: 999999; background: rgba(0,0,0,0.65);";
+    modalContainer.innerHTML = `
+      <!-- Parent custom fixed full-screen outer container with requested transparent backdrop -->
+      <div id="trailing-guide-backdrop" class="fixed inset-0 w-full h-full flex items-center justify-center" style="background: rgba(0, 0, 0, 0.1);">
+        <!-- Inner child popup container, beautifully centered -->
+        <div class="bg-stone-900 border border-stone-800 rounded-2xl w-[85%] max-w-[280px] p-6 shadow-2xl relative text-center flex flex-col items-center justify-center transform scale-100 transition-all pointer-events-auto">
+          
+          <!-- Elegant top icon -->
+          <div class="w-14 h-14 rounded-full bg-rose-950/40 border border-rose-500/30 flex items-center justify-center mb-4 text-glow shrink-0">
+            <span class="text-2xl select-none select-none">🔥</span>
+          </div>
+
+          <!-- Title -->
+          <h3 class="text-sm font-bold font-serif text-amber-200 tracking-wider mb-2">
+            阵营暂时落后
+          </h3>
+
+          <!-- Description -->
+          <p class="text-[11px] text-stone-400 leading-relaxed font-sans mb-6">
+            您拥立的阵营目前积分暂时落后。<br/>通关龙舟竞舟助力本派，即可解锁专属土味表情包定制特权！
+          </p>
+
+          <!-- Action button -->
+          <button id="btn-close-trailing-guide" class="w-full py-2.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs tracking-widest cursor-pointer transition-all active:scale-[0.98]">
+            通关助力解锁 ↗
+          </button>
+        </div>
+      </div>
+    `;
+
+    document.getElementById("btn-close-trailing-guide")?.addEventListener("click", () => {
+      state.showTrailingGuideModal = false;
+      renderModal();
+      startBoatGameIframe();
+    });
+
+    document.getElementById("trailing-guide-backdrop")?.addEventListener("click", (e) => {
+      if (e.target === document.getElementById("trailing-guide-backdrop")) {
+        state.showTrailingGuideModal = false;
+        renderModal();
+      }
+    });
+    return;
+  }
 
   if (state.showGameReturnTip) {
     modalContainer.className = "fixed pointer-events-auto flex items-center justify-center";
@@ -568,6 +855,7 @@ function renderGameIframe(appContainer) {
 
       state.currentPage = "home";
       state.showGameReturnTip = true;
+      state.stickerUnlocked = true;
       renderUI();
     } else {
       state.currentPage = "home";
@@ -650,6 +938,8 @@ function renderUI() {
     if (subContainer) {
       if (state.currentPage === "home") {
         renderHome(subContainer);
+      } else if (state.currentPage === "quiz") {
+        renderQuiz(subContainer);
       }
     }
 
