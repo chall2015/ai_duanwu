@@ -1,5 +1,12 @@
 let activeBg = null;
 let activeGame = null;
+let gameTimer = null;
+let hasSubmittedVotes = false;
+
+function startBoatGameIframe() {
+  state.currentPage = "game-iframe";
+  renderUI();
+}
 
 // Re-generate visual stickers canvas and export PNG
 async function drawStickerCanvasAndSave(sticker, containerId) {
@@ -261,11 +268,11 @@ function renderHome(appContainer) {
 
     // Navigation triggers
     document.getElementById("btn-goto-game-fun")?.addEventListener("click", () => {
-      window.location.href = "https://wap.cztv.com/h5/news/10376960";
+      startBoatGameIframe();
     });
 
     document.getElementById("btn-goto-game-fight")?.addEventListener("click", () => {
-      window.location.href = "https://wap.cztv.com/h5/news/10376960";
+      startBoatGameIframe();
     });
   }
 }
@@ -312,7 +319,47 @@ function renderModal() {
     `;
 
     document.getElementById("btn-loader-go-game")?.addEventListener("click", () => {
-      window.location.href = "https://wap.cztv.com/h5/news/10376960";
+      state.stickerGenerating = false;
+      startBoatGameIframe();
+    });
+    return;
+  }
+
+  if (state.showAwardPopup) {
+    modalContainer.className = "absolute inset-0 z-50 pointer-events-auto flex items-center justify-center shadow-2xl";
+    modalContainer.innerHTML = `
+      <!-- Backdrop Overlay at the very bottom layer -->
+      <div id="award-modal-backdrop" class="absolute inset-0 bg-stone-950/85 backdrop-blur-md z-1"></div>
+      
+      <!-- Modal Contents: Ultra Flat, Crispy, and Well-aligned on top -->
+      <div class="bg-stone-900 border border-stone-800 rounded-xl w-[80%] max-w-xs flex flex-col p-6 shadow-2xl relative z-10 text-center">
+        
+        <!-- Flat Icon -->
+        <div class="w-14 h-14 rounded-full bg-stone-950 border border-stone-800/80 flex items-center justify-center mx-auto mb-4">
+          <span class="text-2xl select-none">🏆</span>
+        </div>
+
+        <h3 class="text-sm font-bold font-serif text-amber-200 tracking-wider mb-2">
+          擂鼓助威告捷
+        </h3>
+        
+        <p class="text-xs text-stone-400 leading-relaxed font-sans mb-6">
+          恭喜为本队贡献了 <span class="text-amber-400 font-bold text-sm font-mono">100</span> 票！
+        </p>
+
+        <button id="btn-close-award-modal" class="w-full py-2.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs tracking-widest cursor-pointer transition-all active:scale-98">
+          我知道了
+        </button>
+      </div>
+    `;
+
+    document.getElementById("btn-close-award-modal")?.addEventListener("click", () => {
+      state.showAwardPopup = false;
+      renderUI();
+    });
+    document.getElementById("award-modal-backdrop")?.addEventListener("click", () => {
+      state.showAwardPopup = false;
+      renderUI();
     });
     return;
   }
@@ -323,13 +370,13 @@ function renderModal() {
     return;
   }
 
-  modalContainer.className = "absolute inset-0 z-40 pointer-events-auto flex items-center justify-center";
+  modalContainer.className = "absolute inset-0 z-50 pointer-events-auto flex items-center justify-center";
   modalContainer.innerHTML = `
-    <!-- Backdrop Overlay -->
-    <div id="modal-backdrop" class="absolute inset-0 bg-stone-950/80 backdrop-blur-xs z-30"></div>
+    <!-- Backdrop Overlay at the lowest layer -->
+    <div id="modal-backdrop" class="absolute inset-0 bg-stone-950/80 backdrop-blur-xs z-1"></div>
     
-    <!-- Modal Dialog Window -->
-    <div class="bg-stone-900 border border-stone-800 rounded-2xl w-[90%] max-w-sm flex flex-col max-h-[80vh] shadow-2xl select-none relative overflow-hidden z-40 animate-in zoom-in-95 duration-150">
+    <!-- Modal Dialog Window on top -->
+    <div class="bg-stone-900 border border-stone-800 rounded-2xl w-[90%] max-w-sm flex flex-col max-h-[80vh] shadow-2xl select-none relative overflow-hidden z-10 animate-in zoom-in-95 duration-150">
       
       <!-- Modal Header -->
       <div class="px-5 py-4 border-b border-stone-800 flex justify-between items-center bg-stone-950/40">
@@ -418,6 +465,116 @@ function renderGame(appContainer) {
   activeGame.start();
 }
 
+function renderGameIframe(appContainer) {
+  hasSubmittedVotes = false;
+  
+  appContainer.innerHTML = `
+    <div class="absolute inset-0 flex flex-col justify-between bg-stone-950 font-sans z-50 text-white">
+      <!-- Game Top Status Bar -->
+      <div class="px-4 py-3 bg-stone-900 border-b border-stone-850 flex justify-between items-center shadow-md">
+        <div class="flex items-center gap-2">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+          </span>
+          <span class="text-xs text-stone-200 font-medium font-serif tracking-wider">🚣 擂鼓劲渡，竞舟争流！</span>
+        </div>
+        <div class="text-[11px] text-amber-400 font-mono font-bold bg-amber-950/50 border border-amber-800/40 px-2.5 py-0.5 rounded-full shadow-inner animate-pulse" id="game-countdown-text">
+          10 秒后自动结算
+        </div>
+      </div>
+      
+      <!-- Safe interactive container -->
+      <div class="flex-1 w-full bg-stone-900 relative">
+        <iframe 
+          src="https://chinablue.epub360.com.cn/v2/manage/book/ryg5pg/" 
+          class="absolute inset-0 w-full h-full border-0 select-none" 
+          allow="autoplay; geolocation; microphone; camera"
+          style="width: 100%; height: 100%;">
+        </iframe>
+      </div>
+      
+      <!-- Bottom Safe Back Panel just in case they want to leave early -->
+      <div class="p-3.5 bg-stone-950 border-t border-stone-850 flex justify-center shadow-lg">
+        <button id="btn-abort-game" class="px-6 py-2 text-xs font-bold text-stone-400 hover:text-stone-200 hover:bg-stone-850 border border-stone-800 rounded-full transition cursor-pointer select-none">
+          [ 提前折返 ]
+        </button>
+      </div>
+    </div>
+  `;
+
+  let secondsLeft = 10;
+  
+  if (gameTimer) {
+    clearInterval(gameTimer);
+  }
+
+  const handleGameFinished = async (isSuccess = true) => {
+    if (gameTimer) {
+      clearInterval(gameTimer);
+      gameTimer = null;
+    }
+    
+    if (hasSubmittedVotes) return;
+    hasSubmittedVotes = true;
+
+    if (isSuccess) {
+      const activeCamp = state.userCamp || "sweet";
+      try {
+        const res = await fetch("/api/votes", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ camp: activeCamp, amount: 100 })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success) {
+            state.votes = data.votes;
+          }
+        } else {
+          if (activeCamp === "sweet") state.votes.sweet += 100;
+          else state.votes.salty += 100;
+        }
+      } catch (err) {
+        console.error("Failed to post batch votes:", err);
+        if (activeCamp === "sweet") state.votes.sweet += 100;
+        else state.votes.salty += 100;
+      }
+      notifyStateChange();
+
+      state.currentPage = "home";
+      state.showAwardPopup = true;
+      renderUI();
+    } else {
+      state.currentPage = "home";
+      renderUI();
+    }
+  };
+
+  gameTimer = setInterval(() => {
+    secondsLeft -= 1;
+    const txt = document.getElementById("game-countdown-text");
+    if (txt) {
+      txt.textContent = `${secondsLeft} 秒后自动结算`;
+    }
+    
+    if (secondsLeft <= 0) {
+      handleGameFinished(true);
+    }
+  }, 1000);
+
+  document.getElementById("btn-abort-game")?.addEventListener("click", () => {
+    handleGameFinished(false);
+  });
+
+  const messageHandler = (e) => {
+    if (e.data && typeof e.data === "string" && (e.data.includes("gameOver") || e.data.includes("gameEnd") || e.data.includes("finish"))) {
+      handleGameFinished(true);
+    }
+  };
+  window.addEventListener("message", messageHandler);
+}
+
 // Unified Render Router Layer
 function renderUI() {
   const appContainer = document.getElementById("app-container");
@@ -436,6 +593,8 @@ function renderUI() {
   // Handle Game Layout or Custom National Wind Animated Background Page Canvas
   if (state.currentPage === "game") {
     renderGame(appContainer);
+  } else if (state.currentPage === "game-iframe") {
+    renderGameIframe(appContainer);
   } else {
     // Generate background structure and sub page content container
     appContainer.innerHTML = `

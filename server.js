@@ -40,16 +40,17 @@ app.get("/api/votes", (req, res) => {
 
 // 2. API Endpoint: Post Vote
 app.post("/api/votes", (req, res) => {
-  const { camp } = req.body;
+  const { camp, amount } = req.body;
   if (camp !== "sweet" && camp !== "salty") {
     res.status(400).json({ error: "Invalid camp specification" });
     return;
   }
   const votes = getVotes();
+  const increment = amount ? parseInt(amount, 10) : (1 + Math.floor(Math.random() * 3));
   if (camp === "sweet") {
-    votes.sweet += 1 + Math.floor(Math.random() * 3);
+    votes.sweet += increment;
   } else {
-    votes.salty += 1 + Math.floor(Math.random() * 3);
+    votes.salty += increment;
   }
   saveVotes(votes);
   res.json({ success: true, votes });
