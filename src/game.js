@@ -109,6 +109,18 @@ class DragonBoatGame {
 
     this.renderLayout();
     this.bindControls();
+
+    this.resizeHandler = () => {
+      if (this.canvas) {
+        const parent = this.canvas.parentElement;
+        if (parent) {
+          this.canvas.width = parent.clientWidth;
+          this.canvas.height = parent.clientHeight;
+        }
+      }
+    };
+    window.addEventListener("resize", this.resizeHandler);
+
     this.queueNextFlag(1500);
     this.tick();
   }
@@ -120,6 +132,9 @@ class DragonBoatGame {
     }
     if (this.promptTimer) {
       clearTimeout(this.promptTimer);
+    }
+    if (this.resizeHandler) {
+      window.removeEventListener("resize", this.resizeHandler);
     }
   }
 

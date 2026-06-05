@@ -4,7 +4,7 @@ function initApp() {
 
   // Render the core framed device wrap shell
   root.innerHTML = `
-    <div id="app-container" class="w-full h-full max-w-[400px] max-h-[820px] bg-stone-950 border-0 sm:border border-stone-800/80 sm:rounded-[36px] shadow-2xl overflow-hidden flex flex-col justify-between relative">
+    <div id="app-container" class="w-full h-full sm:max-w-[400px] sm:max-h-[820px] bg-stone-950 border-0 sm:border border-stone-800/80 sm:rounded-[36px] shadow-2xl overflow-hidden flex flex-col justify-between relative">
     </div>
   `;
 

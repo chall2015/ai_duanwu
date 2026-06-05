@@ -185,7 +185,7 @@ function renderHome(appContainer) {
             isUserLeading
               ? `
               <div class="text-[11px] text-emerald-400 font-medium bg-emerald-950/30 border border-emerald-800/30 px-3.5 py-3 rounded-xl text-center leading-relaxed">
-                🎉 捷报！您所支持的阵营在实时票数中正值<strong>占优</strong>！您已被授权享有签发特权：
+                🎉 捷报！您所支持的阵营在实时票数中正值<strong>占优</strong>！拥有定制专属表情包特权！
               </div>
               
               <!-- Direct camera/photo input hidden selector -->
@@ -261,13 +261,11 @@ function renderHome(appContainer) {
 
     // Navigation triggers
     document.getElementById("btn-goto-game-fun")?.addEventListener("click", () => {
-      state.currentPage = "game";
-      renderUI();
+      window.location.href = "https://wap.cztv.com/h5/news/10376960";
     });
 
     document.getElementById("btn-goto-game-fight")?.addEventListener("click", () => {
-      state.currentPage = "game";
-      renderUI();
+      window.location.href = "https://wap.cztv.com/h5/news/10376960";
     });
   }
 }
@@ -294,7 +292,7 @@ function renderModal() {
           🎭 专属表情包生成中...
         </h3>
         <p class="text-xs text-stone-400 max-w-[260px] leading-relaxed mb-6">
-          AI 正在精心识别真容、测算民俗面相并为您定制专属称号与战令宣言中，请少侠稍候！
+          可在【我的表情包】查看生成结果
         </p>
 
         <!-- Guidance Card to Battle play -->
@@ -314,9 +312,7 @@ function renderModal() {
     `;
 
     document.getElementById("btn-loader-go-game")?.addEventListener("click", () => {
-      state.currentPage = "game";
-      state.showStickersModal = false;
-      renderUI();
+      window.location.href = "https://wap.cztv.com/h5/news/10376960";
     });
     return;
   }
@@ -338,7 +334,7 @@ function renderModal() {
       <!-- Modal Header -->
       <div class="px-5 py-4 border-b border-stone-800 flex justify-between items-center bg-stone-950/40">
         <h3 class="font-serif font-bold text-amber-200 text-sm flex items-center gap-1.5">
-          📜 我的端午表情包大典
+          📜 我的表情包
         </h3>
         <button id="btn-close-modal" class="text-stone-400 hover:text-stone-200 text-xl font-bold cursor-pointer w-8 h-8 rounded-full flex items-center justify-center hover:bg-stone-800/50 transition">
           &times;
@@ -355,66 +351,21 @@ function renderModal() {
             </p>
           </div>
         ` : `
-          <div class="space-y-6">
-            ${state.myStickers.map((sticker, idx) => `
-              <div class="space-y-3 bg-stone-950/40 p-2.5 rounded-xl border border-stone-850">
-                <div class="flex justify-between items-center px-1">
-                  <span class="text-[9px] font-mono text-stone-500">签发令符 #${state.myStickers.length - idx}</span>
-                  <button class="text-[9px] text-red-500 hover:underline cursor-pointer btn-modal-delete-sticker" data-id="${sticker.id}">
-                    [焚香销毁]
-                  </button>
-                </div>
-                
-                <!-- Embedded Sticker Canvas Card -->
-                <div class="p-4 rounded-xl border bg-stone-900 border-stone-800 text-center relative shadow-md overflow-hidden text-xs">
-                  <div class="absolute inset-0 opacity-[0.01] pointer-events-none bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
-                  
-                  <div class="flex justify-between items-center mb-3 pb-2 border-b border-stone-800/80">
-                    <span class="text-[8px] font-mono tracking-wider text-stone-500">汨罗江端午大典</span>
-                    <span class="px-2 py-0.5 rounded-full text-[8px] font-bold text-stone-300 ${
-                      sticker.camp === "sweet" ? "bg-rose-950/80 border border-rose-800 text-rose-300" : "bg-emerald-950/80 border border-emerald-800 text-emerald-300"
-                    }">
-                      ${sticker.camp === "sweet" ? "甜粽党" : "咸粽党"}
-                    </span>
-                  </div>
-
-                  <!-- Avatar Frame -->
-                  <div class="relative w-18 h-18 mx-auto mb-3">
-                    <div class="absolute -inset-1 rounded-full bg-gradient-to-tr ${
-                      sticker.camp === "sweet" ? "from-pink-600 via-amber-400 to-rose-600" : "from-emerald-600 via-yellow-400 to-teal-600"
-                    } opacity-75 blur-[1px]"></div>
-                    
-                    <div class="relative w-full h-full bg-stone-950 rounded-full overflow-hidden border border-stone-800 flex items-center justify-center">
-                      ${
-                        sticker.avatarUrl
-                          ? `<img src="${sticker.avatarUrl}" class="w-full h-full object-cover" alt="Avatar" referrerPolicy="no-referrer" />`
-                          : `<div class="text-xl">${sticker.camp === "sweet" ? "🍧" : "🥩"}</div>`
-                      }
-                    </div>
-                  </div>
-
-                  <!-- Name -->
-                  <h3 class="text-stone-100 font-bold text-xs tracking-wide mb-1">
-                    ${sticker.username}
-                  </h3>
-                  <div class="inline-block px-2 py-0.5 bg-stone-950/90 border border-stone-800 rounded text-[9px] font-bold text-amber-400 font-calligraphy mb-1">
-                    称号：${sticker.title}
-                  </div>
-
-                  <!-- Scroll Declaration -->
-                  <div class="relative px-2 py-1.5 bg-stone-950/60 rounded-lg border border-stone-800/80 mb-2.5 text-left">
-                    <p class="text-stone-300 text-[10px] italic leading-relaxed text-center font-sans">
-                      “ ${sticker.declaration} ”
-                    </p>
-                  </div>
-
-                  <!-- Funny Feature Analysis -->
-                  <div class="px-2 py-2 rounded-lg bg-stone-850/40 text-left border border-white/[0.01]">
-                    <div class="text-[8px] uppercase tracking-widest text-[#a855f7] font-bold mb-0.5">🔮 AI 面相剖析</div>
-                    <p class="text-[9px] text-stone-400 leading-snug">${sticker.funnyAnalysis}</p>
-                  </div>
-                </div>
-
+          <div class="space-y-4">
+            ${state.myStickers.map((sticker) => `
+              <div class="w-full rounded-2xl overflow-hidden border border-stone-800 bg-stone-904 shadow-2xl relative group" style="aspect-ratio: 1 / 1; width: 100%;">
+                <!-- Outer decorative subtle border glow -->
+                <div class="absolute inset-0 border border-white/5 rounded-2xl pointer-events-none z-10"></div>
+                ${
+                  sticker.avatarUrl
+                    ? `<img src="${sticker.avatarUrl}" class="w-full h-full object-cover block" style="width: 100%; height: 100%; object-fit: cover; aspect-ratio: 1 / 1;" alt="表情包图片" referrerPolicy="no-referrer" />`
+                    : `
+                      <div class="w-full h-full flex flex-col items-center justify-center text-stone-500 font-serif">
+                        <span class="text-4xl mb-2 select-none block">🍧</span>
+                        <span class="text-[10px] tracking-widest text-stone-600">暂无图片</span>
+                      </div>
+                    `
+                }
               </div>
             `).join("")}
           </div>
