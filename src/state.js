@@ -12,6 +12,7 @@ const state = {
   quizScore: 0,
   stickerUnlocked: false,
   showTrailingGuideModal: false,
+  showRulesModal: false,
   scores: {
     currentGame: 0,
     highScore: parseInt(localStorage.getItem("dragon_boat_high_score") || "0", 10)

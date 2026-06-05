@@ -534,6 +534,67 @@ function renderModal() {
   // Reset inline styles
   modalContainer.style.cssText = "";
 
+  if (state.showRulesModal) {
+    modalContainer.className = "fixed pointer-events-auto flex items-center justify-center animate-in fade-in duration-200";
+    modalContainer.style.cssText = "width: 100%; height: 100%; z-index: 999999; background: rgba(0,0,0,0.65);";
+    modalContainer.innerHTML = `
+      <!-- Backdrop container -->
+      <div id="rules-backdrop" class="fixed inset-0 w-full h-full flex items-center justify-center" style="background: rgba(0, 0, 0, 0.1);">
+        <!-- Inner child popup container, beautifully centered -->
+        <div class="bg-stone-900 border border-stone-800 rounded-2xl w-[90%] max-w-[320px] p-6 shadow-2xl relative text-left flex flex-col transform scale-100 transition-all pointer-events-auto max-h-[80vh] overflow-hidden">
+          
+          <!-- Close button -->
+          <button id="btn-close-rules" class="absolute top-4 right-4 text-stone-400 hover:text-stone-200 text-xl font-bold cursor-pointer w-8 h-8 rounded-full flex items-center justify-center hover:bg-stone-800/50 transition">
+            &times;
+          </button>
+
+          <!-- Title -->
+          <h3 class="text-sm font-bold font-serif text-amber-200 tracking-wider mb-4 flex items-center gap-1.5 shadow-xs shrink-0 select-none">
+            🏮 活动规则
+          </h3>
+
+          <!-- Rules Content (Scrollable if needed) -->
+          <div class="flex-1 overflow-y-auto space-y-3.5 pr-1 text-[11px] text-stone-300 leading-relaxed font-sans scrollbar-thin scrollbar-thumb-stone-800 animate-in fade-in duration-300">
+            <div>
+              <p class="text-stone-300"><span class="font-bold text-amber-400">1.</span> 选择甜粽/咸粽任一阵营，作答对应阵营5道专属题目，答对1题积1分，积分计入阵营总票数；</p>
+            </div>
+            
+            <div>
+              <p class="text-stone-300"><span class="font-bold text-amber-400">2.</span> 答题结束实时显示双方票数、占比数据，阵营领先可直接解锁头像专属土味表情包制作机会；</p>
+            </div>
+
+            <div>
+              <p class="text-stone-300"><span class="font-bold text-amber-400">3.</span> 阵营落后可进行龙舟竞速挑战，通关成功即可解锁表情包定制资格；</p>
+            </div>
+
+            <div>
+              <p class="text-stone-300"><span class="font-bold text-amber-400">4.</span> 微信端一次表情包生成机会，中国蓝新闻客户端不限次数；</p>
+            </div>
+          </div>
+
+          <!-- Bottom Action button -->
+          <button id="btn-close-rules-bottom" class="w-full mt-5 py-2.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs tracking-widest cursor-pointer transition-all active:scale-[0.98] shrink-0">
+            我知道了
+          </button>
+        </div>
+      </div>
+    `;
+
+    const closeRulesModal = () => {
+      state.showRulesModal = false;
+      renderModal();
+    };
+
+    document.getElementById("btn-close-rules")?.addEventListener("click", closeRulesModal);
+    document.getElementById("btn-close-rules-bottom")?.addEventListener("click", closeRulesModal);
+    document.getElementById("rules-backdrop")?.addEventListener("click", (e) => {
+      if (e.target === document.getElementById("rules-backdrop")) {
+        closeRulesModal();
+      }
+    });
+    return;
+  }
+
   if (state.showGameReturnTip) {
     modalContainer.className = "fixed pointer-events-auto flex items-center justify-center";
     modalContainer.style.cssText = "width: 100%; height: 100%; z-index: 999999; background: rgba(0,0,0,0.6);";
@@ -860,6 +921,13 @@ function renderUI() {
       <div class="absolute inset-0 overflow-hidden flex flex-col justify-between">
         <canvas id="bg-canvas" class="absolute inset-0 w-full h-full pointer-events-none z-0"></canvas>
         
+        <!-- Persistent Float Header / Activity Rules Button at Top Left -->
+        <div class="absolute top-4 left-4 z-20">
+          <button id="btn-show-rules-modal" class="px-3 py-1.5 rounded-full border border-stone-800 bg-stone-900/95 hover:bg-stone-850 duration-150 text-[11px] text-stone-300 font-bold shadow-md flex items-center gap-1 cursor-pointer pointer-events-auto">
+            🏮 活动规则
+          </button>
+        </div>
+
         <!-- Persistent Float Header / My Stickers Button at Top Right -->
         <div class="absolute top-4 right-4 z-20">
           <button id="btn-show-stickers-modal" class="px-3 py-1.5 rounded-full border border-amber-500/30 bg-stone-900/95 hover:bg-stone-850 duration-150 text-[11px] text-amber-200 font-bold shadow-md flex items-center gap-1 cursor-pointer pointer-events-auto">
@@ -891,6 +959,11 @@ function renderUI() {
     }
 
     // Bind Persistent UI Elements
+    document.getElementById("btn-show-rules-modal")?.addEventListener("click", () => {
+      state.showRulesModal = true;
+      renderModal();
+    });
+
     document.getElementById("btn-show-stickers-modal")?.addEventListener("click", () => {
       state.showStickersModal = true;
       renderModal();
