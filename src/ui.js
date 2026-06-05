@@ -206,6 +206,10 @@ function renderHome(appContainer) {
               <button id="btn-goto-game-fun" class="w-full py-3.5 rounded-xl border border-amber-600/30 bg-amber-950/10 hover:bg-amber-950/20 text-amber-200 text-xs font-bold tracking-wider transition active:scale-[0.98] cursor-pointer text-center">
                 🚣 擂鼓竞舟挑战
               </button>
+
+              <button id="btn-more-interactions-fun" class="w-full py-3 rounded-xl border border-stone-800/80 bg-stone-950/60 hover:bg-stone-900/80 text-stone-300 text-xs font-bold tracking-wider transition active:scale-[0.98] cursor-pointer text-center mt-1">
+                ✨ 参与更多互动
+              </button>
             `
               : `
               <div class="text-[11px] text-rose-400 font-medium bg-rose-950/30 border border-rose-800/30 px-3.5 py-3 rounded-xl text-center leading-relaxed">
@@ -215,6 +219,10 @@ function renderHome(appContainer) {
               <button id="btn-goto-game-fight" class="w-full py-4 rounded-xl font-bold text-sm tracking-wide bg-amber-600 hover:bg-amber-500 text-stone-100 shadow-md transition active:scale-[0.98] cursor-pointer pointer-events-auto border-t border-amber-400/20 relative group overflow-hidden">
                 <div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition duration-150"></div>
                 🚣 擂鼓竞舟挑战
+              </button>
+
+              <button id="btn-more-interactions-fight" class="w-full py-3 rounded-xl border border-stone-800/80 bg-stone-950/60 hover:bg-stone-900/80 text-stone-300 text-xs font-bold tracking-wider transition active:scale-[0.98] cursor-pointer text-center mt-1">
+                ✨ 参与更多互动
               </button>
             `
           }
@@ -274,13 +282,64 @@ function renderHome(appContainer) {
     document.getElementById("btn-goto-game-fight")?.addEventListener("click", () => {
       startBoatGameIframe();
     });
+
+    document.getElementById("btn-more-interactions-fun")?.addEventListener("click", () => {
+      window.open("https://wap.cztv.com/h5/news/10376960", "_blank");
+    });
+
+    document.getElementById("btn-more-interactions-fight")?.addEventListener("click", () => {
+      window.open("https://wap.cztv.com/h5/news/10376960", "_blank");
+    });
   }
 }
 
-// 2. Sticker Custom Modal Dialog Render helper template
 function renderModal() {
   const modalContainer = document.getElementById("modal-container");
   if (!modalContainer) return;
+
+  // Reset inline styles
+  modalContainer.style.cssText = "";
+
+  if (state.showGameReturnTip) {
+    modalContainer.className = "fixed pointer-events-auto flex items-center justify-center";
+    modalContainer.style.cssText = "width: 100%; height: 100%; z-index: 999999; background: rgba(0,0,0,0.6);";
+    modalContainer.innerHTML = `
+      <!-- Parent custom fixed full-screen outer container with requested transparent backdrop -->
+      <div id="game-return-backdrop" class="fixed inset-0 w-full h-full flex items-center justify-center" style="background: rgba(0, 0, 0, 0.1);">
+        <!-- Inner child popup container, beautifully centered -->
+        <div class="bg-stone-900 border border-stone-800 rounded-2xl w-[85%] max-w-[280px] p-6 shadow-2xl relative text-center flex flex-col items-center justify-center transform scale-100 transition-all pointer-events-auto">
+          
+          <!-- Elegant top icon -->
+          <div class="w-14 h-14 rounded-full bg-amber-950/45 border border-amber-500/30 flex items-center justify-center mb-4">
+            <span class="text-2xl select-none">🏆</span>
+          </div>
+
+          <!-- Title -->
+          <h3 class="text-sm font-bold font-serif text-amber-200 tracking-wider mb-5">
+            擂鼓助威告捷
+          </h3>
+
+          <!-- Action button -->
+          <button id="btn-close-game-return-tip" class="w-full py-2.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs tracking-widest cursor-pointer transition-all active:scale-[0.98]">
+            我知道了
+          </button>
+        </div>
+      </div>
+    `;
+
+    document.getElementById("btn-close-game-return-tip")?.addEventListener("click", () => {
+      state.showGameReturnTip = false;
+      renderModal();
+    });
+
+    document.getElementById("game-return-backdrop")?.addEventListener("click", (e) => {
+      if (e.target === document.getElementById("game-return-backdrop")) {
+        state.showGameReturnTip = false;
+        renderModal();
+      }
+    });
+    return;
+  }
 
   if (state.stickerGenerating) {
     modalContainer.className = "absolute inset-0 z-40 pointer-events-auto flex items-center justify-center bg-stone-950/95";
@@ -326,42 +385,7 @@ function renderModal() {
   }
 
   if (state.showAwardPopup) {
-    modalContainer.className = "absolute inset-0 z-50 pointer-events-auto flex items-center justify-center shadow-2xl";
-    modalContainer.innerHTML = `
-      <!-- Backdrop Overlay at the very bottom layer -->
-      <div id="award-modal-backdrop" class="absolute inset-0 bg-stone-950/85 backdrop-blur-md z-1"></div>
-      
-      <!-- Modal Contents: Ultra Flat, Crispy, and Well-aligned on top -->
-      <div class="bg-stone-900 border border-stone-800 rounded-xl w-[80%] max-w-xs flex flex-col p-6 shadow-2xl relative z-10 text-center">
-        
-        <!-- Flat Icon -->
-        <div class="w-14 h-14 rounded-full bg-stone-950 border border-stone-800/80 flex items-center justify-center mx-auto mb-4">
-          <span class="text-2xl select-none">🏆</span>
-        </div>
-
-        <h3 class="text-sm font-bold font-serif text-amber-200 tracking-wider mb-2">
-          擂鼓助威告捷
-        </h3>
-        
-        <p class="text-xs text-stone-400 leading-relaxed font-sans mb-6">
-          恭喜为本队贡献了 <span class="text-amber-400 font-bold text-sm font-mono">100</span> 票！
-        </p>
-
-        <button id="btn-close-award-modal" class="w-full py-2.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs tracking-widest cursor-pointer transition-all active:scale-98">
-          我知道了
-        </button>
-      </div>
-    `;
-
-    document.getElementById("btn-close-award-modal")?.addEventListener("click", () => {
-      state.showAwardPopup = false;
-      renderUI();
-    });
-    document.getElementById("award-modal-backdrop")?.addEventListener("click", () => {
-      state.showAwardPopup = false;
-      renderUI();
-    });
-    return;
+    state.showAwardPopup = false;
   }
 
   if (!state.showStickersModal) {
@@ -543,7 +567,7 @@ function renderGameIframe(appContainer) {
       notifyStateChange();
 
       state.currentPage = "home";
-      state.showAwardPopup = true;
+      state.showGameReturnTip = true;
       renderUI();
     } else {
       state.currentPage = "home";

@@ -6,6 +6,7 @@ const state = {
   username: "",
   stickerGenerating: false,
   userPhotoBase64: "",
+  showGameReturnTip: false,
   scores: {
     currentGame: 0,
     highScore: parseInt(localStorage.getItem("dragon_boat_high_score") || "0", 10)

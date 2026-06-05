@@ -233,38 +233,6 @@ class DragonBoatGame {
           </div>
         </div>
       </div>
-
-      <!-- Game Over Modal Screen Overlay -->
-      <div id="gameover-modal" class="absolute inset-0 bg-stone-950/95 flex flex-col items-center justify-center px-8 text-center z-20 hidden">
-        <div class="w-16 h-16 rounded-full bg-red-950 border border-red-500 flex items-center justify-center mb-6">
-          <span class="text-4xl">🚣</span>
-        </div>
-        
-        <h2 class="text-2xl font-bold font-calligraphy text-amber-400 mb-2">端午鼓点竞渡 终局！</h2>
-        <p class="text-xs text-stone-400 mb-6 max-w-[280px]">“鼓声止步，舟人归港。”你在激浪翻滚的汨罗江中完成竞渡！</p>
-
-        <div class="w-full max-w-[280px] bg-stone-900 border border-stone-800 rounded-xl p-4 mb-8">
-          <div class="flex justify-between items-center mb-2">
-            <span class="text-xs text-stone-500">本次得分:</span>
-            <span id="final-score" class="text-xl font-bold font-mono text-yellow-500">0</span>
-          </div>
-          <div class="w-full border-t border-stone-800/85 my-2"></div>
-          <div class="flex justify-between items-center">
-            <span class="text-xs text-stone-500">江山霸主高分:</span>
-            <span id="high-score-display" class="text-base font-bold font-mono text-emerald-400">0</span>
-          </div>
-        </div>
-
-        <div class="flex flex-col gap-3 w-full max-w-[240px]">
-          <button id="btn-retry-game" class="w-full py-3 rounded-full bg-emerald-600 hover:bg-emerald-500 text-stone-100 font-bold text-sm tracking-wider shadow-md transform active:scale-95 transition pointer-events-auto cursor-pointer">
-            擂鼓再战
-          </button>
-          
-          <button id="btn-back-to-generate" class="w-full py-3 rounded-full bg-stone-800 hover:bg-stone-750 text-stone-300 font-bold text-xs tracking-wider border border-transparent hover:border-stone-750 transition pointer-events-auto cursor-pointer">
-            返回定制我的表情包
-          </button>
-        </div>
-      </div>
     `;
 
     this.canvas = this.container.querySelector("#game-canvas");
@@ -282,8 +250,6 @@ class DragonBoatGame {
     const btnLeft = this.container.querySelector("#btn-drum-left");
     const btnRight = this.container.querySelector("#btn-drum-right");
     const btnBack = this.container.querySelector("#game-btn-back");
-    const btnRetry = this.container.querySelector("#btn-retry-game");
-    const btnBackToGen = this.container.querySelector("#btn-back-to-generate");
 
     btnLeft?.addEventListener("click", () => this.handleDrumming("LEFT"));
     btnRight?.addEventListener("click", () => this.handleDrumming("RIGHT"));
@@ -300,18 +266,9 @@ class DragonBoatGame {
 
     btnBack?.addEventListener("click", () => {
       this.destroy();
-      const e = new CustomEvent("route-change", { detail: "sticker" });
+      state.showGameReturnTip = true;
+      const e = new CustomEvent("route-change", { detail: "home" });
       window.dispatchEvent(e);
-    });
-
-    btnBackToGen?.addEventListener("click", () => {
-      this.destroy();
-      const e = new CustomEvent("route-change", { detail: "sticker" });
-      window.dispatchEvent(e);
-    });
-
-    btnRetry?.addEventListener("click", () => {
-      this.start();
     });
   }
 
@@ -517,16 +474,10 @@ class DragonBoatGame {
     this.isGameOver = true;
     updateGameScore(this.score);
 
-    const modal = this.container.querySelector("#gameover-modal");
-    const finalScoreDisplay = this.container.querySelector("#final-score");
-    const highScoreDisplay = this.container.querySelector("#high-score-display");
-
-    if (finalScoreDisplay) finalScoreDisplay.textContent = this.score.toString();
-    if (highScoreDisplay) highScoreDisplay.textContent = localStorage.getItem("dragon_boat_high_score") || "0";
-
-    if (modal) {
-      modal.classList.remove("hidden");
-    }
+    this.destroy();
+    state.showGameReturnTip = true;
+    const e = new CustomEvent("route-change", { detail: "home" });
+    window.dispatchEvent(e);
   }
 
   spawnSplashes() {
